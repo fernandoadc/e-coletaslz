@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { auth } from './firebase_config'; // Importe a instância do auth do Firebase
+import axios from "axios";
+import { auth } from "./firebase_config"; // Importe a instância do auth do Firebase
 
 const apiUrl = import.meta.env.VITE_API_URL;
 const api = axios.create({
@@ -22,7 +22,7 @@ api.interceptors.request.use(
   (error) => {
     // Trata erros da requisição
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

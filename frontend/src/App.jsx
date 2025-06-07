@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
-import { useAuth, AuthProvider } from './services/auth';
-import UserTypeSelector from './pages/UserTypeSelector';
-import LoginForm from './pages/LoginForm';
-import SignupForm from './pages/SignUpForm';
-import EstablishmentDashboard from './pages/EstablishmentDashboard';
-import CollectorDashboard from './pages/CollectorDashboard';
+import React, { useState } from "react";
+import { useAuth, AuthProvider } from "./services/auth";
+import UserTypeSelector from "./pages/UserTypeSelector";
+import LoginForm from "./pages/LoginForm";
+import SignupForm from "./pages/SignUpForm";
+import EstablishmentDashboard from "./pages/EstablishmentDashboard";
+import CollectorDashboard from "./pages/CollectorDashboard";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   const { user, loading } = useAuth();
-  const [selectedUserType, setSelectedUserType] = useState('');
-  const [authMode, setAuthMode] = useState('login'); // 'login' ou 'signup'
+  const [selectedUserType, setSelectedUserType] = useState("");
+  const [authMode, setAuthMode] = useState("login"); // 'login' ou 'signup'
 
   if (loading) {
     return (
@@ -23,7 +25,7 @@ const App = () => {
   }
 
   if (user) {
-    if (user.userType === 'establishment') {
+    if (user.userType === "establishment") {
       return <EstablishmentDashboard />;
     } else {
       return <CollectorDashboard />;
@@ -34,20 +36,20 @@ const App = () => {
     return <UserTypeSelector onSelectType={setSelectedUserType} />;
   }
 
-  if (authMode === 'login') {
+  if (authMode === "login") {
     return (
       <LoginForm
         userType={selectedUserType}
-        onBack={() => setSelectedUserType('')}
-        onToggleForm={() => setAuthMode('signup')}
+        onBack={() => setSelectedUserType("")}
+        onToggleForm={() => setAuthMode("signup")}
       />
     );
   } else {
     return (
       <SignupForm
         userType={selectedUserType}
-        onBack={() => setSelectedUserType('')}
-        onToggleForm={() => setAuthMode('login')}
+        onBack={() => setSelectedUserType("")}
+        onToggleForm={() => setAuthMode("login")}
       />
     );
   }
@@ -57,6 +59,19 @@ const AppWithAuth = () => {
   return (
     <AuthProvider>
       <App />
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </AuthProvider>
   );
 };
