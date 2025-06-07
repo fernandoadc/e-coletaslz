@@ -17,13 +17,16 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
+import {inject, intercept} from '@loopback/core';
 import {Users} from '../models';
 import {UsersRepository} from '../repositories';
+import {ValidateDocumentInterceptor} from '../interceptors';
 
+@intercept(ValidateDocumentInterceptor.BINDING_KEY)
 export class UserController {
   constructor(
     @repository(UsersRepository)
-    public usersRepository : UsersRepository,
+    public usersRepository: UsersRepository,
   ) {}
 
   @post('/users')
@@ -52,9 +55,7 @@ export class UserController {
     description: 'Users model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Users) where?: Where<Users>,
-  ): Promise<Count> {
+  async count(@param.where(Users) where?: Where<Users>): Promise<Count> {
     return this.usersRepository.count(where);
   }
 
@@ -70,9 +71,7 @@ export class UserController {
       },
     },
   })
-  async find(
-    @param.filter(Users) filter?: Filter<Users>,
-  ): Promise<Users[]> {
+  async find(@param.filter(Users) filter?: Filter<Users>): Promise<Users[]> {
     return this.usersRepository.find(filter);
   }
 
@@ -106,7 +105,8 @@ export class UserController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Users, {exclude: 'where'}) filter?: FilterExcludingWhere<Users>
+    @param.filter(Users, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Users>,
   ): Promise<Users> {
     return this.usersRepository.findById(id, filter);
   }
