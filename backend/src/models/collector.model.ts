@@ -1,7 +1,7 @@
 import {Entity, model, property} from '@loopback/repository';
 
 @model()
-export class Coletor extends Entity {
+export class Collector extends Entity {
   @property({
     type: 'number',
     id: true,
@@ -13,7 +13,30 @@ export class Coletor extends Entity {
     type: 'string',
     required: true,
   })
-  nome: string;
+  email: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  name: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  phone: string;
+
+  @property({
+    type: 'boolean',
+  })
+  isActive?: boolean;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  license: string;
 
   @property({
     type: 'string',
@@ -21,25 +44,14 @@ export class Coletor extends Entity {
   })
   cpf: string;
 
-  @property({
-    type: 'string',
-    required: true,
-  })
-  telefone: string;
 
-  @property({
-    type: 'boolean',
-  })
-  active?: boolean;
-
-
-  constructor(data?: Partial<Coletor>) {
+  constructor(data?: Partial<Collector>) {
     super(data);
   }
 }
 
-export interface ColetorRelations {
+export interface CollectorRelations {
   // describe navigational properties here
 }
 
-export type ColetorWithRelations = Coletor & ColetorRelations;
+export type CollectorWithRelations = Collector & CollectorRelations;

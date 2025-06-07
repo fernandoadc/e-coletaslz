@@ -1,1 +1,2 @@
-export * from './coletor.repository';
+export * from './collector.repository';
+export * from './users.repository';

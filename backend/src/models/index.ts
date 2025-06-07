@@ -1,1 +1,2 @@
-export * from './coletor.model';
+export * from './collector.model';
+export * from './users.model';

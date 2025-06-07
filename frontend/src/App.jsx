@@ -1,13 +1,11 @@
-// src/App.jsx
 import React, { useState } from 'react';
-import { useAuth, AuthProvider } from './services/Auth';
+import { useAuth, AuthProvider } from './services/auth';
 import UserTypeSelector from './pages/UserTypeSelector';
 import LoginForm from './pages/LoginForm';
 import SignupForm from './pages/SignUpForm';
 import EstablishmentDashboard from './pages/EstablishmentDashboard';
 import CollectorDashboard from './pages/CollectorDashboard';
 
-// Componente principal do App
 const App = () => {
   const { user, loading } = useAuth();
   const [selectedUserType, setSelectedUserType] = useState('');
@@ -24,7 +22,6 @@ const App = () => {
     );
   }
 
-  // Se o usuário está logado, mostrar o dashboard apropriado
   if (user) {
     if (user.userType === 'establishment') {
       return <EstablishmentDashboard />;
@@ -33,12 +30,10 @@ const App = () => {
     }
   }
 
-  // Se nenhum tipo de usuário foi selecionado, mostrar seletor
   if (!selectedUserType) {
     return <UserTypeSelector onSelectType={setSelectedUserType} />;
   }
 
-  // Mostrar formulário de login ou cadastro baseado no modo atual
   if (authMode === 'login') {
     return (
       <LoginForm
@@ -58,7 +53,6 @@ const App = () => {
   }
 };
 
-// Componente wrapper com o Provider
 const AppWithAuth = () => {
   return (
     <AuthProvider>

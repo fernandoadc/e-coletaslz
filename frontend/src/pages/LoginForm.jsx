@@ -1,9 +1,8 @@
 // src/components/auth/LoginForm.jsx
 import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, Building, Users, ArrowLeft } from 'lucide-react';
-import { useAuth } from '../services/Auth';
+import { useAuth } from '../services/auth';
 
-// Componente de Login
 const LoginForm = ({ userType, onBack, onToggleForm }) => {
   const { login } = useAuth();
   const [formData, setFormData] = useState({
@@ -19,11 +18,13 @@ const LoginForm = ({ userType, onBack, onToggleForm }) => {
     setLoading(true);
     setError('');
 
+    // AJUSTE AQUI: Passando os 3 argumentos para a nova função de login
     const result = await login(formData.email, formData.password, userType);
     
     if (!result.success) {
       setError(result.error);
     }
+    // Se o login for bem-sucedido, o onAuthStateChanged redirecionará ou atualizará a UI
     
     setLoading(false);
   };

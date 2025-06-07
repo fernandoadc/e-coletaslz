@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../services/Auth';
+import { useAuth } from '../services/auth';
 import { MapPin, AlertCircle, CheckCircle, Clock, Trash2, Bell } from 'lucide-react';
 
 function EstablishmentDashboard() {

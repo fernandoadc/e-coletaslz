@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../services/Auth';
+import { useAuth } from '../services/auth';
 import { MapPin, Navigation, Clock, CheckCircle, AlertCircle, Truck, Route, Bell, Filter } from 'lucide-react';
 
 function CollectorDashboard() {

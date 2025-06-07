@@ -1,15 +1,19 @@
 // src/components/auth/SignupForm.jsx
 import React, { useState } from 'react';
-import { MapPin, Users, Eye, EyeOff, Mail, Lock, User, Phone, Building, ArrowLeft } from 'lucide-react';
-import { useAuth } from '../services/Auth';
+// NOVO: Ícone genérico para documento
+import { MapPin, Users, Eye, EyeOff, Mail, Lock, User, Phone, Building, ArrowLeft, FileText } from 'lucide-react'; 
+import { useAuth } from '../services/auth';
+// DICA: Para uma melhor experiência do usuário, considere adicionar uma biblioteca de máscara de input
+// import InputMask from 'react-input-mask';
 
-// Componente de Cadastro
 const SignupForm = ({ userType, onBack, onToggleForm }) => {
   const { signup } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
+    // MUDANÇA: 'cpf' foi generalizado para 'document'
+    document: '', 
     password: '',
     confirmPassword: '',
     ...(userType === 'establishment' && { address: '' }),
@@ -35,6 +39,7 @@ const SignupForm = ({ userType, onBack, onToggleForm }) => {
       userType
     };
 
+    // A lógica de processar os campos de documento agora está centralizada no 'auth.jsx'
     const result = await signup(dataToSubmit);
     
     if (!result.success) {
@@ -55,9 +60,14 @@ const SignupForm = ({ userType, onBack, onToggleForm }) => {
   const bgColor = userType === 'establishment' ? 'from-blue-50 to-indigo-50' : 'from-green-50 to-emerald-50';
   const primaryColor = userType === 'establishment' ? 'blue' : 'green';
 
+  // MUDANÇA: Variáveis dinâmicas para o campo de documento
+  const documentLabel = userType === 'establishment' ? 'CNPJ' : 'CPF';
+  const documentPlaceholder = userType === 'establishment' ? '00.000.000/0000-00' : '000.000.000-00';
+
   return (
     <div className={`min-h-screen bg-gradient-to-br ${bgColor} flex items-center justify-center p-4`}>
       <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full">
+        {/* ... (cabeçalho não mudou) ... */}
         <div className="text-center mb-8">
           <button
             onClick={onBack}
@@ -84,6 +94,7 @@ const SignupForm = ({ userType, onBack, onToggleForm }) => {
             </div>
           )}
 
+          {/* ... (campos de nome, email, telefone não mudaram) ... */}
           <div>
             <label className="block text-gray-700 text-sm font-medium mb-2">
               {userType === 'establishment' ? 'Nome do Estabelecimento' : 'Nome Completo'}
@@ -134,8 +145,27 @@ const SignupForm = ({ userType, onBack, onToggleForm }) => {
             </div>
           </div>
 
+          {/* NOVO CAMPO DE DOCUMENTO DINÂMICO */}
+          <div>
+            <label className="block text-gray-700 text-sm font-medium mb-2">{documentLabel}</label>
+            <div className="relative">
+              <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              {/* Dica: Troque este 'input' pelo componente 'InputMask' para formatar a entrada */}
+              <input
+                type="text"
+                name="document"
+                value={formData.document}
+                onChange={handleChange}
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder={documentPlaceholder}
+                required
+              />
+            </div>
+          </div>
+
+          {/* ... (campos específicos de endereço e licença não mudaram) ... */}
           {userType === 'establishment' && (
-            <div>
+             <div>
               <label className="block text-gray-700 text-sm font-medium mb-2">Endereço</label>
               <div className="relative">
                 <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -167,6 +197,7 @@ const SignupForm = ({ userType, onBack, onToggleForm }) => {
             </div>
           )}
 
+          {/* ... (campos de senha e botões não mudaram) ... */}
           <div>
             <label className="block text-gray-700 text-sm font-medium mb-2">Senha</label>
             <div className="relative">
