@@ -1,6 +1,7 @@
 // src/components/auth/UserTypeSelector.jsx
 import React from "react";
 import { Trash2, Users, Building } from "lucide-react";
+import { Link } from "react-router-dom"; // Importar Link do react-router-dom
 
 // Componente de seleção de tipo de usuário
 const UserTypeSelector = ({ onSelectType }) => {
@@ -20,21 +21,20 @@ const UserTypeSelector = ({ onSelectType }) => {
         </div>
 
         <div className="space-y-4">
-          <button
-            onClick={() => onSelectType("establishment")}
+          <Link
+            to="/login/establishment" // Link para a rota de login
             className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-200 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
             <Building className="w-6 h-6" />
             Sou Estabelecimento
-          </button>
-
-          <button
-            onClick={() => onSelectType("collector")}
+          </Link>
+          <Link
+            to="/login/collector" // Link para a rota de login
             className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-200 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
             <Users className="w-6 h-6" />
             Sou Coletor
-          </button>
+          </Link>
         </div>
       </div>
     </div>

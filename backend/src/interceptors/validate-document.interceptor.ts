@@ -26,19 +26,24 @@ export class ValidateDocumentInterceptor implements Provider<Interceptor> {
     invocationCtx: InvocationContext,
     next: () => ValueOrPromise<InvocationResult>,
   ) {
-    try {
-      if (invocationCtx.methodName === 'create') {
-        const data = invocationCtx.args[0];
-        const doc = data?.documentValue;
-        const cnh = data?.license;
-        if (!doc || !validaDocumento(doc) || (cnh && !validaDocumento(cnh))) {
-          throw new HttpErrors.UnprocessableEntity(
-            'Documento inválido (CPF, CNPJ ou CNH).',
-          );
-        }
-        const result = await next();
-        return result;
+    if (invocationCtx.methodName === 'create') {
+      const data = invocationCtx.args[0];
+      const doc = data?.documentValue;
+      const cnh = data?.license;
+      if (!doc || !validaDocumento(doc)) {
+        throw new HttpErrors.UnprocessableEntity(
+          'O documento principal (CPF/CNPJ) fornecido é inválido.',
+        );
       }
+      // console.log('CNH:', cnh);
+      if (cnh && !validaDocumento(cnh)) {
+        throw new HttpErrors.UnprocessableEntity('A CNH fornecida é inválida.');
+      }
+    }
+
+    try {
+      const result = await next();
+      return result;
     } catch (err) {
       throw err;
     }

@@ -15,8 +15,11 @@ import {
 import { useAuth, validaCPF } from "../services/auth";
 import { toast } from "react-toastify";
 import { IMaskInput } from "react-imask";
+import { useParams, useNavigate } from "react-router-dom";
 
-const SignupForm = ({ userType, onBack, onToggleForm }) => {
+const SignupForm = () => {
+  const { userType } = useParams(); // 3. Pegar userType da URL
+  const navigate = useNavigate();
   const { signup } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
@@ -145,7 +148,7 @@ const SignupForm = ({ userType, onBack, onToggleForm }) => {
       <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full">
         <div className="text-center mb-8 relative">
           <button
-            onClick={onBack}
+            onClick={() => navigate(`/login/${userType}`)}
             className="absolute left-0 top-0 p-2 text-gray-600 hover:text-gray-800 transition-colors"
           >
             <ArrowLeft className="w-6 h-6" />
@@ -292,7 +295,7 @@ const SignupForm = ({ userType, onBack, onToggleForm }) => {
               <div className="relative">
                 <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <IMaskInput
-                  mask="12345678911"
+                  mask="00000000000"
                   name="license"
                   value={formData.license}
                   onAccept={(value) =>
@@ -375,7 +378,7 @@ const SignupForm = ({ userType, onBack, onToggleForm }) => {
           <div className="text-center">
             <button
               type="button"
-              onClick={onToggleForm}
+              onClick={() => navigate(`/login/${userType}`)}
               className="text-gray-600 hover:text-gray-800 text-sm"
             >
               Já tem conta?{" "}

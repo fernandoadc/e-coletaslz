@@ -10,8 +10,11 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { useAuth } from "../services/auth";
+import { useParams, useNavigate } from "react-router-dom";
 
-const LoginForm = ({ userType, onBack, onToggleForm }) => {
+const LoginForm = () => {
+  const { userType } = useParams();
+  const navigate = useNavigate();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
@@ -25,16 +28,12 @@ const LoginForm = ({ userType, onBack, onToggleForm }) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-
-    // AJUSTE AQUI: Passando os 3 argumentos para a nova função de login
     const result = await login(formData.email, formData.password, userType);
-
     if (!result.success) {
       setError(result.error);
+      setLoading(false);
     }
-    // Se o login for bem-sucedido, o onAuthStateChanged redirecionará ou atualizará a UI
-
-    setLoading(false);
+    // Se o login for sucesso, o onAuthStateChanged fará o resto, e o ProtectedRoute irá redirecionar
   };
 
   const handleChange = (e) => {
@@ -59,7 +58,7 @@ const LoginForm = ({ userType, onBack, onToggleForm }) => {
       <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full">
         <div className="text-center mb-8">
           <button
-            onClick={onBack}
+            onClick={() => navigate("/")}
             className="absolute top-4 left-4 p-2 text-gray-600 hover:text-gray-800 transition-colors"
           >
             <ArrowLeft className="w-6 h-6" />
@@ -137,7 +136,11 @@ const LoginForm = ({ userType, onBack, onToggleForm }) => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-${primaryColor}-500 hover:bg-${primaryColor}-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
+            className={`w-full text-white font-semibold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+              userType === "establishment"
+                ? "bg-blue-500 hover:bg-blue-600"
+                : "bg-green-500 hover:bg-green-600"
+            }`}
           >
             {loading ? "Entrando..." : "Entrar"}
           </button>
@@ -145,7 +148,7 @@ const LoginForm = ({ userType, onBack, onToggleForm }) => {
           <div className="text-center">
             <button
               type="button"
-              onClick={onToggleForm}
+              onClick={() => navigate(`/signup/${userType}`)}
               className="text-gray-600 hover:text-gray-800 text-sm"
             >
               Não tem conta?{" "}

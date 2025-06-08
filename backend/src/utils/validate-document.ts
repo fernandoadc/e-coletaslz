@@ -149,8 +149,12 @@ export function validaCNH(cnh: string): boolean {
 
 export function validaDocumento(doc: string): boolean {
   const cleanDoc: string = doc.replace(/[^\d]/g, '');
-  if (cleanDoc.length === 11) return validaCPF(cleanDoc);
+  // if (cleanDoc.length === 11) return validaCPF(cleanDoc);
   if (cleanDoc.length === 14) return validaCNPJ(cleanDoc);
-  if (cleanDoc.length === 11) return validaCNH(cleanDoc);
+  // if (cleanDoc.length === 11) return validaCNH(cleanDoc);
+
+  if (cleanDoc.length === 11) {
+    return validaCPF(cleanDoc) || validaCNH(cleanDoc);
+  }
   return false;
 }

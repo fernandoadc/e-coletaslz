@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom"; // Importar componentes do router
 import { useAuth, AuthProvider } from "./services/auth";
 import UserTypeSelector from "./pages/UserTypeSelector";
 import LoginForm from "./pages/LoginForm";
@@ -7,59 +8,80 @@ import EstablishmentDashboard from "./pages/EstablishmentDashboard";
 import CollectorDashboard from "./pages/CollectorDashboard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import LoadingSpinner from "./components/LoadingSpinner";
 
-const App = () => {
+const ProtectedRoute = ({ expectedType }) => {
   const { user, loading } = useAuth();
-  const [selectedUserType, setSelectedUserType] = useState("");
-  const [authMode, setAuthMode] = useState("login"); // 'login' ou 'signup'
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Carregando...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
-  if (user) {
-    if (user.userType === "establishment") {
-      return <EstablishmentDashboard />;
-    } else {
-      return <CollectorDashboard />;
-    }
+  if (!user) {
+    return <Navigate to="/" replace />;
   }
 
-  if (!selectedUserType) {
-    return <UserTypeSelector onSelectType={setSelectedUserType} />;
+  // Verifica se o tipo de usuário corresponde ao esperado
+  if (expectedType && user.userType !== expectedType) {
+    return <Navigate to="/" replace />;
   }
 
-  if (authMode === "login") {
-    return (
-      <LoginForm
-        userType={selectedUserType}
-        onBack={() => setSelectedUserType("")}
-        onToggleForm={() => setAuthMode("signup")}
-      />
-    );
-  } else {
-    return (
-      <SignupForm
-        userType={selectedUserType}
-        onBack={() => setSelectedUserType("")}
-        onToggleForm={() => setAuthMode("login")}
-      />
-    );
-  }
+  return user.userType === "establishment" ? (
+    <EstablishmentDashboard />
+  ) : (
+    <CollectorDashboard />
+  );
 };
 
+// AuthLayout atualizado
+const AuthLayout = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  // Redireciona para o dashboard apropriado se já estiver autenticado
+  if (user) {
+    const redirectTo =
+      user.userType === "establishment"
+        ? "/dashboard/establishment"
+        : "/dashboard/collector";
+    return <Navigate to={redirectTo} replace />;
+  }
+
+  return <Outlet />;
+};
+
+// Atualize as rotas para usar a proteção adequada
+const App = () => {
+  return (
+    <Routes>
+      <Route element={<AuthLayout />}>
+        <Route path="/" element={<UserTypeSelector />} />
+        <Route path="/login/:userType" element={<LoginForm />} />
+        <Route path="/signup/:userType" element={<SignupForm />} />
+      </Route>
+
+      <Route
+        path="/dashboard/establishment"
+        element={<ProtectedRoute expectedType="establishment" />}
+      />
+      <Route
+        path="/dashboard/collector"
+        element={<ProtectedRoute expectedType="collector" />}
+      />
+
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
+  );
+};
+
+// AppWithAuth continua o mesmo
 const AppWithAuth = () => {
   return (
     <AuthProvider>
       <App />
-
       <ToastContainer
         position="top-right"
         autoClose={5000}
